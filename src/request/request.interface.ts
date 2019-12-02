@@ -8,5 +8,5 @@ export interface IRequest {
     fileUrl: string;
     from: IUser; // user-id
     to: IUser;
-    unit: IUnit;
+    unit: string;
 }
