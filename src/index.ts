@@ -26,6 +26,7 @@ process.on('SIGINT', async () => {
 (async () => {
     mongoose.set('useCreateIndex', true);
     mongoose.set('useUnifiedTopology', true);
+    mongoose.set('useFindAndModify', false);
 
     mongoose.connection.on('connecting', () => {
         console.log('[MongoDB] connecting...');
