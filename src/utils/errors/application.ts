@@ -22,3 +22,16 @@ export class UserError extends ApplicationError {
         super(message || 'User Error', status || 400);
     }
 }
+
+
+export class NotPermittedError extends UserError {
+    constructor() {
+        super('Operation not permitted', 403);
+    }
+}
+
+export class NotFoundError extends UserError {
+    constructor() {
+        super('Resource not found', 404);
+    }
+}
