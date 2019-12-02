@@ -1,5 +1,7 @@
 export interface IUser {
     id: string;
-    firstName: string;
-    lastName: string;
+    name: string;
+    unit: string;
+    rank: string;
+    isAdmin?: boolean;
 }

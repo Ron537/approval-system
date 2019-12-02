@@ -3,9 +3,13 @@ import * as http from 'http';
 import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import * as morgan from 'morgan';
+import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
 import { config } from './config';
 import { AppRouter } from './router';
 import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/handler';
+import { AuthenticationHandler } from './authentication/handler';
+import { AuthenticationRouter } from './authentication/router';
 
 export class Server {
     public app: express.Application;
@@ -18,6 +22,7 @@ export class Server {
     private constructor() {
         this.app = express();
         this.configureMiddlewares();
+        this.initializeAuthenticator();
         this.app.use('/api/v1', AppRouter);
         this.initializeErrorHandler();
         this.server = http.createServer(this.app);
@@ -56,11 +61,22 @@ export class Server {
 
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(cookieParser());
+        this.app.use(session({
+            secret: config.auth.secret,
+            resave: false,
+            saveUninitialized: true
+        }));
     }
 
     private initializeErrorHandler() {
         this.app.use(userErrorHandler);
         this.app.use(serverErrorHandler);
         this.app.use(unknownErrorHandler);
+    }
+
+    private initializeAuthenticator() {
+        AuthenticationHandler.initialize(this.app);
+        this.app.use('/auth/', AuthenticationRouter);
     }
 }
