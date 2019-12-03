@@ -10,4 +10,8 @@ export class RequestController {
     static async changeStatus(req: ExpressRequest, res: ExpressResponse) {
         res.json(await Request.changeStatus(req.params.id, req.user as IUser, req.body.status));
     }
+
+    static async getApprovableRequests(req: ExpressRequest, res: ExpressResponse) {
+        res.json(await Request.getApprovableRequests(req.user as IUser));
+    }
 }

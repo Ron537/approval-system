@@ -44,4 +44,20 @@ export class Request {
 
         return (unit && unit.approvers && unit.approvers.length > 0 && unit.approvers.indexOf(user.rank) !== -1 && unit.name === user.unit);
     }
+
+    static async getApprovableRequests(user: IUser): Promise<IRequest[]> {
+        const unit = await Unit.findByName(user.unit);
+
+        if (!unit || !unit.approvers || unit.approvers.indexOf(user.rank) === -1) {
+            return [];
+        }
+
+        return await Request.requestRepository.find({
+            unit: user.unit,
+            $or: [
+                { status: RequestStatus.PENDING },
+                { status: RequestStatus.WAITING_FOR_INFO }
+            ]
+        })
+    }
 }
