@@ -8,6 +8,6 @@ export class RequestController {
     }
 
     static async changeStatus(req: ExpressRequest, res: ExpressResponse) {
-        res.json(await Request.changeStatus(req.body.id, req.user as IUser, req.body.status));
+        res.json(await Request.changeStatus(req.params.id, req.user as IUser, req.body.status));
     }
 }

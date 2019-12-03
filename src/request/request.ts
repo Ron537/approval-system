@@ -4,16 +4,20 @@ import { Unit } from '../unit/unit';
 import { IUser } from '../user/user.interface';
 import { RequestStatus } from './request-status.enum';
 import { NotPermittedError, NotFoundError } from '../utils/errors/application';
+import { UserService } from '../utils/users-service/service';
 
 export class Request {
     private static requestRepository: RequestRepository = new RequestRepository();
 
     static async create(request: IRequest): Promise<IRequest> {
-        const unit = await Unit.findByName(request.unit);
+        const user = await UserService.getById(request.from);
+        const unit = await Unit.findByName(user.unit);
 
         if (!unit) {
-            await Unit.create(request.unit);
+            await Unit.create(user.unit);
         }
+
+        request.unit = user.unit;
 
         return Request.requestRepository.create(request);
     }
@@ -35,9 +39,9 @@ export class Request {
         throw new NotPermittedError();
     }
 
-    private static async canApprove(user: IUser, request: IRequest): Promise<boolean> {
+    static async canApprove(user: IUser, request: IRequest): Promise<boolean> {
         const unit = await Unit.findByName(request.unit);
 
-        return (unit && unit.approvers && unit.approvers.length > 0 && unit.approvers.indexOf(user.rank) !== -1 && unit.name === user.name);
+        return (unit && unit.approvers && unit.approvers.length > 0 && unit.approvers.indexOf(user.rank) !== -1 && unit.name === user.unit);
     }
 }

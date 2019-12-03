@@ -4,6 +4,10 @@ import { IRequest } from './request.interface';
 
 const requestSchema: mongoose.Schema = new mongoose.Schema(
     {
+        _id: {
+            type: String,
+        },
+        id: String,
         status: {
             type: String,
             enum: Object.keys(RequestStatus),
@@ -28,9 +32,13 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
         }
     },
     {
-        id: true,
+        _id: false,
         timestamps: true,
     },
 );
+
+requestSchema.pre('save', function() {
+    this._id = this.id;
+});
 
 export const RequestModel = mongoose.model<IRequest & mongoose.Document>('Request', requestSchema);
