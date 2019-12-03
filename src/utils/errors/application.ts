@@ -23,6 +23,11 @@ export class UserError extends ApplicationError {
     }
 }
 
+export class ValidationError extends UserError {
+    constructor() {
+        super('Validation error', 400);
+    }
+}
 
 export class NotPermittedError extends UserError {
     constructor() {
