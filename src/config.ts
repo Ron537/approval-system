@@ -30,5 +30,8 @@ export const config = {
     },
     kartoffel: {
         url: process.env.KARTOFFEL_URL || 'http://kartoffel-master.eastus.cloudapp.azure.com:3001/api',
+    },
+    client: {
+        url: process.env.CLIENT_URL || 'http://localhost:4200'
     }
 }

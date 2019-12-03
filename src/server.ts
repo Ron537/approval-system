@@ -10,6 +10,8 @@ import { AppRouter } from './router';
 import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/handler';
 import { AuthenticationHandler } from './authentication/handler';
 import { AuthenticationRouter } from './authentication/router';
+import * as expressProxy from 'express-http-proxy';
+import { AuthenticationMiddleware } from './authentication/middleware';
 
 export class Server {
     public app: express.Application;
@@ -22,9 +24,10 @@ export class Server {
     private constructor() {
         this.app = express();
         this.configureMiddlewares();
-        this.app.use('/api/v1', AppRouter);
         this.initializeAuthenticator();
+        this.app.use('/api/v1', AppRouter);
         this.initializeErrorHandler();
+        this.app.all('/*', AuthenticationMiddleware.requireAuth, expressProxy('http://localhost:4200'));
         this.server = http.createServer(this.app);
         this.server.listen(config.server.port, () => {
             console.log(`Server running in ${process.env.NODE_ENV || 'development'} environment on port ${config.server.port}`)
@@ -65,7 +68,7 @@ export class Server {
         this.app.use(session({
             secret: config.auth.secret,
             resave: false,
-            saveUninitialized: true
+            saveUninitialized: false
         }));
     }
 
