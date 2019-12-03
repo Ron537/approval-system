@@ -22,8 +22,8 @@ export class Server {
     private constructor() {
         this.app = express();
         this.configureMiddlewares();
-        this.initializeAuthenticator();
         this.app.use('/api/v1', AppRouter);
+        this.initializeAuthenticator();
         this.initializeErrorHandler();
         this.server = http.createServer(this.app);
         this.server.listen(config.server.port, () => {
