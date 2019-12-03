@@ -2,26 +2,25 @@ import { Application, Request, Response } from "express";
 import * as passport from 'passport';
 import { Strategy } from 'passport-shraga';
 import { config } from '../config';
-import { User } from '../user/user';
+import { UserService } from "../utils/users-service/service";
 
 export class AuthenticationHandler {
     static initialize(app: Application) {
         app.use(passport.initialize());
+        app.use(passport.session());
 
         passport.serializeUser(AuthenticationHandler.serialize);
         passport.deserializeUser(AuthenticationHandler.deserialize);
 
         passport.use(new Strategy(config.auth, (profile, done) => {
-            console.log(profile);
-
             done(null, profile);
         }));
 
         return passport.initialize();
     }
 
-    static handleUser(req:Request, res:Response){
-        
+    static handleUser(req: Request, res: Response) {
+
     }
 
     static authenticate() {
@@ -37,7 +36,7 @@ export class AuthenticationHandler {
 
     private static async deserialize(id: string, done: (err?: Error, user?: any) => void) {
         try {
-            const user = await User.findById(id.toLowerCase());
+            const user = await UserService.getById(id);
             done(undefined, user);
         } catch (err) {
             done(err, null);
