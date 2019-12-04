@@ -13,7 +13,8 @@ export class RequestValidator {
             !request.to ||
             !Array.isArray(request.to) ||
             request.to.length === 0 ||
-            !request.fileId
+            !request.fileId ||
+            !request.classification
         ) {
             return next(new UserError('Validation error', 400));
         }

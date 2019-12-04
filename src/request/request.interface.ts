@@ -6,6 +6,7 @@ export interface IRequest {
     fileId: string;
     from: string; 
     to: string[]; 
+    classification: string;
     unit?: string; 
     info?: string;
     authorizer?: string;

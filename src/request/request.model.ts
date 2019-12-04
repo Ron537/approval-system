@@ -35,6 +35,10 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
         },
         authorizer: {
             type: String,
+        },
+        classification: {
+            type: String,
+            required: true,
         }
     },
     {
