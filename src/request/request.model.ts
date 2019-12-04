@@ -14,7 +14,7 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
             default: RequestStatus.PENDING,
             required: true,
         },
-        fileUrl: {
+        fileId: {
             type: String,
             required: true,
         },
@@ -29,6 +29,9 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
         unit: {
             type: String,
             required: true,
+        },
+        info: {
+            type: String
         }
     },
     {

@@ -1,13 +1,11 @@
 import { RequestStatus } from "./request-status.enum";
-import { IUser } from "../user/user.interface";
-import { IUnit } from "../unit/unit.interface";
 
 export interface IRequest {
-    id: string; // get from service
+    id: string; 
     status: RequestStatus;
-    fileUrl: string; // fileId
+    fileId: string;
     from: string; 
     to: string[]; 
-    unit?: string; // get it from the "from" user
-    // info - object / text
+    unit?: string; 
+    info?: string;
 }
