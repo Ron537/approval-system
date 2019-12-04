@@ -52,12 +52,22 @@ export class Request {
             return [];
         }
 
-        return await Request.requestRepository.find({
+        const requests = await Request.requestRepository.find({
             unit: user.unit,
             $or: [
                 { status: RequestStatus.PENDING },
                 { status: RequestStatus.WAITING_FOR_INFO }
             ]
-        })
+        });
+
+        const usersMap = await UserService.getByIds(requests.map(r => r.from));
+
+        return requests.map((request: IRequest) => {
+            if (usersMap.has(request.from)) {
+                request.from = usersMap.get(request.from).name;
+            }
+
+            return request;
+        });
     }
 }
