@@ -5,4 +5,8 @@ export class UnitController {
     static async create(req: Request, res: Response) {
         res.json(await Unit.create(req.body.name));
     }
+
+    static async get(req: Request, res: Response) {
+        res.json(await Unit.getAll());
+    }
 }

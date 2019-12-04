@@ -26,4 +26,10 @@ export class Unit {
             approvers: ranks
         });
     }
+
+    static getAll(): Promise<IUnit[]> {
+        return Unit.unitRepository.find({
+            name: { $ne: config.defaultUnitName }
+        });
+    }
 }
