@@ -32,6 +32,9 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
         },
         info: {
             type: String
+        },
+        authorizer: {
+            type: String,
         }
     },
     {

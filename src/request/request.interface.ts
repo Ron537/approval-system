@@ -8,4 +8,5 @@ export interface IRequest {
     to: string[]; 
     unit?: string; 
     info?: string;
+    authorizer?: string;
 }

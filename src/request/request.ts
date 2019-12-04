@@ -38,7 +38,7 @@ export class Request {
         const canApprove = await Request.canApprove(user, request);
 
         if (canApprove) {
-            return await Request.requestRepository.update(requestId, { status });
+            return await Request.requestRepository.update(requestId, { status, authorizer: user.id });
         }
 
         throw new NotPermittedError();
