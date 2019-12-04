@@ -11,6 +11,8 @@ export class RequestValidator {
             !request.id ||
             !request.from ||
             !request.to ||
+            !Array.isArray(request.to) ||
+            request.to.length === 0 ||
             !request.fileUrl
         ) {
             return next(new UserError('Validation error', 400));

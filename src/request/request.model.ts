@@ -22,10 +22,10 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        to: {
+        to: [{
             type: String,
             required: true,
-        },
+        }],
         unit: {
             type: String,
             required: true,
