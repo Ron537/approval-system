@@ -24,4 +24,18 @@ export class UserService {
 
         return user;
     }
+
+    static async getByIds(ids: string[]): Promise<Map<string, IUser>> {
+        const uniqueIds = Array.from(new Set(ids));
+        const userPromises = uniqueIds.map(id => UserService.getById(id).catch(e => undefined));
+        const users = await Promise.all(userPromises);
+        const usersMap: Map<string, IUser> = new Map();
+        users.forEach((user: IUser) => {
+            if (user) {
+                usersMap.set(user.id, user);
+            }
+        });
+
+        return usersMap;
+    }
 }
