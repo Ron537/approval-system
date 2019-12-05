@@ -9,4 +9,8 @@ export class UnitController {
     static async get(req: Request, res: Response) {
         res.json(await Unit.getAll());
     }
+
+    static async changeApprovalRanks(req: Request, res: Response) {
+        res.json(await Unit.setApprovalRanks(req.params.id, req.body.ranks));
+    }
 }

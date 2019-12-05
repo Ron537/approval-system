@@ -22,7 +22,7 @@ export class Unit {
     }
 
     static setApprovalRanks(unit: string, ranks: string[]): Promise<IUnit> {
-        return Unit.unitRepository.updateByName(unit, {
+        return Unit.unitRepository.update(unit, {
             approvers: ranks
         });
     }
