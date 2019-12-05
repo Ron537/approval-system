@@ -27,6 +27,12 @@ export class Unit {
         });
     }
 
+    static setSpecialApprovers(unit:string, specialApprovers: string[]): Promise<IUnit> {
+        return Unit.unitRepository.update(unit, {
+            specialApprovers
+        });
+    }
+
     static getAll(): Promise<IUnit[]> {
         return Unit.unitRepository.find({
             name: { $ne: config.defaultUnitName }

@@ -9,7 +9,13 @@ const unitSchema: mongoose.Schema = new mongoose.Schema(
         },
         approvers: [{
             type: String
-        }]
+        }],
+        specialApprovers: {
+            type: [{
+                type: String
+            }],
+            default: [],
+        }
     },
     {
         id: true,

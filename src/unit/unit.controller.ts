@@ -13,4 +13,8 @@ export class UnitController {
     static async changeApprovalRanks(req: Request, res: Response) {
         res.json(await Unit.setApprovalRanks(req.params.id, req.body.ranks));
     }
+
+    static async changeSpecialApprovers(req: Request, res:Response) {
+        res.json(await Unit.setSpecialApprovers(req.params.id, req.body.specialApprovers));
+    }
 }
