@@ -5,7 +5,7 @@ export interface IRequest {
     status: RequestStatus;
     fileId: string;
     from: string; 
-    to: string[]; 
+    to: {id: string, name: string}[]; 
     classification: string;
     unit?: string; 
     info?: string;

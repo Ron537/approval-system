@@ -2,6 +2,22 @@ import * as mongoose from 'mongoose';
 import { RequestStatus } from './request-status.enum';
 import { IRequest } from './request.interface';
 
+const toSchema: mongoose.Schema = new mongoose.Schema(
+    {
+        id: {
+            type: String,
+            required: true,
+        },
+        name: {
+            type: String,
+            required: true,
+        }
+    },
+    {
+        _id: false,
+    }
+);
+
 const requestSchema: mongoose.Schema = new mongoose.Schema(
     {
         _id: {
@@ -22,10 +38,7 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        to: [{
-            type: String,
-            required: true,
-        }],
+        to: [toSchema],
         unit: {
             type: String,
             required: true,
@@ -47,7 +60,7 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
     },
 );
 
-requestSchema.pre('save', function() {
+requestSchema.pre('save', function () {
     this._id = this.id;
 });
 
