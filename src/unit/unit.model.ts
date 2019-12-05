@@ -8,11 +8,17 @@ const unitSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
         },
         approvers: [{
-            type: String 
+            type: String
         }]
     },
     {
         id: true,
+        toJSON: {
+            virtuals: true,
+        },
+        toObject: {
+            virtuals: true,
+        }
     }
 );
 
