@@ -6,4 +6,13 @@ export class RequestRepository extends Repository<IRequest> {
     constructor() {
         super(RequestModel);
     }
+
+    async updateOne(cond: Object, data: Object, populateOptions?: string | Object): Promise<IRequest> {
+        let updateQuery = RequestModel.findOneAndUpdate(cond, data, { new: true });
+        if (populateOptions) {
+            updateQuery = updateQuery.populate(populateOptions);
+        }
+
+        return updateQuery.exec();
+    }
 }

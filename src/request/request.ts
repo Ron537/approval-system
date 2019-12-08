@@ -6,6 +6,8 @@ import { RequestStatus } from './request-status.enum';
 import { NotPermittedError, NotFoundError } from '../utils/errors/application';
 import { UserService } from '../utils/users-service/service';
 import { ExternalService } from '../utils/external-services';
+import { IUnit } from '../unit/unit.interface';
+import { RequestType } from './request-type.enum';
 
 export class Request {
     private static requestRepository: RequestRepository = new RequestRepository();
@@ -20,11 +22,6 @@ export class Request {
 
         request.unit = user.unit;
 
-        if (unit.approvers.indexOf(user.rank) !== -1) {
-            request.status = RequestStatus.APPROVED;
-            // TODO : send to external service
-        }
-
         return Request.requestRepository.create(request);
     }
 
@@ -36,20 +33,42 @@ export class Request {
             throw new NotFoundError();
         }
 
-        const canApprove = await Request.canApprove(user, request);
+        const unit = await Unit.findByName(request.unit);
+        const hasApprovePermission = this.hasApprovePermission(user, unit);
+        const hasSpecialApprovePermission = this.hasSpecialApprovePermission(user, unit);
 
-        if (canApprove) {
-            await ExternalService.notifyStatusService({ ...request, status });
-            return await Request.requestRepository.update(requestId, { status, authorizer: user.id });
+        if (!hasApprovePermission && !hasSpecialApprovePermission) {
+            throw new NotPermittedError();
         }
 
-        throw new NotPermittedError();
+        let condition = { _id: request.id };
+        let updateExpression = {};
+
+        if (hasApprovePermission && hasSpecialApprovePermission) {
+            updateExpression = {
+                $set: {
+                    'workflow.$[].status': status,
+                }
+            }
+        } else if (hasApprovePermission || hasSpecialApprovePermission) {
+            condition['workflow.type'] = hasApprovePermission ? RequestType.REGULAR : RequestType.SPECIAL;
+            updateExpression = {
+                $set: {
+                    'workflow.$.status': status
+                }
+            }
+        }
+
+        // await ExternalService.notifyStatusService({ ...request, status });
+        return await Request.requestRepository.updateOne(condition, updateExpression);
     }
 
-    static async canApprove(user: IUser, request: IRequest): Promise<boolean> {
-        const unit = await Unit.findByName(request.unit);
-
+    private static hasApprovePermission(user: IUser, unit: IUnit) {
         return (unit && unit.approvers && unit.approvers.length > 0 && unit.approvers.indexOf(user.rank) !== -1 && unit.name === user.unit);
+    }
+
+    private static hasSpecialApprovePermission(user: IUser, unit: IUnit) {
+        return (unit && unit.specialApprovers && unit.specialApprovers.length > 0 && unit.specialApprovers.indexOf(user.id) !== -1);
     }
 
     static async getMyRequests(user: IUser): Promise<IRequest[]> {
@@ -63,17 +82,40 @@ export class Request {
     static async getApprovableRequests(user: IUser): Promise<IRequest[]> {
         const unit = await Unit.findByName(user.unit);
 
-        if (!unit || !unit.approvers || unit.approvers.indexOf(user.rank) === -1) {
-            return [];
+        if (!unit) {
+            throw new NotFoundError();
         }
 
-        const requests = await Request.requestRepository.find({
+        const hasApprovePermission = this.hasApprovePermission(user, unit);
+        const hasSpecialApprovePermission = this.hasSpecialApprovePermission(user, unit);
+
+        const regularApproveCondition = {
             unit: user.unit,
-            $or: [
-                { status: RequestStatus.PENDING },
-                { status: RequestStatus.WAITING_FOR_INFO }
-            ]
-        });
+            'workflow.type': RequestType.REGULAR,
+        };
+
+        const specialApproveCondition = {
+            'workflow.type': RequestType.SPECIAL,
+        }
+
+        let condition = {
+            'workflow.status': {
+                $in: [RequestStatus.PENDING, RequestStatus.WAITING_FOR_INFO],
+            }
+        };
+
+        if (!hasApprovePermission && !hasSpecialApprovePermission) {
+            return [];
+        } else if (hasApprovePermission && hasSpecialApprovePermission) {
+            condition['$or'] = [
+                regularApproveCondition,
+                specialApproveCondition
+            ];
+        } else if (hasApprovePermission || hasSpecialApprovePermission) {
+            condition = { ...condition, ...(hasApprovePermission ? regularApproveCondition : specialApproveCondition) };
+        }
+
+        const requests = await Request.requestRepository.find(condition);
 
         return await Request.populateRequestUsers(requests);
     }
