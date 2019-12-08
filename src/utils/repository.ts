@@ -32,7 +32,7 @@ export abstract class Repository<T> {
             findQuery = findQuery.populate(populateOptions);
         }
 
-        return findQuery.exec();
+        return findQuery.lean().exec();
     }
 
     findOne(cond?: Object, populateOptions?: string | Object, select?: string): Promise<T> {
@@ -43,7 +43,7 @@ export abstract class Repository<T> {
         if (select) {
             findQuery = findQuery.select(select);
         }
-        return findQuery.exec();
+        return findQuery.lean().exec();
     }
 
     find(cond?: Object, populate?: string | Object, select?: string): Promise<T[]> {
@@ -56,6 +56,6 @@ export abstract class Repository<T> {
             findPromise = findPromise.select(select);
         }
 
-        return findPromise.exec();
+        return findPromise.lean().exec();
     }
 }

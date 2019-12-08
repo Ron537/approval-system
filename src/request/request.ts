@@ -5,6 +5,7 @@ import { IUser } from '../user/user.interface';
 import { RequestStatus } from './request-status.enum';
 import { NotPermittedError, NotFoundError } from '../utils/errors/application';
 import { UserService } from '../utils/users-service/service';
+import { ExternalService } from '../utils/external-services';
 
 export class Request {
     private static requestRepository: RequestRepository = new RequestRepository();
@@ -38,6 +39,7 @@ export class Request {
         const canApprove = await Request.canApprove(user, request);
 
         if (canApprove) {
+            await ExternalService.notifyStatusService({ ...request, status });
             return await Request.requestRepository.update(requestId, { status, authorizer: user.id });
         }
 

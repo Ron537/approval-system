@@ -33,5 +33,17 @@ export const config = {
     },
     client: {
         url: process.env.CLIENT_URL || 'http://localhost:4200'
+    },
+    externalServices: {
+        statusService: {
+            url: process.env.STATUS_SERVICE_URL || 'http://localhost/api/v1/status',
+            statuses: {
+                APPROVED: process.env.STATUS_SERVICE_APPROVED_STATUS || 'approved',
+                DENIED: process.env.STATUS_SERVICE_DENIED_STATUS || 'denied',
+                PENDING: process.env.STATUS_SERVICE_PENDING_STATUS || 'pending',
+            }
+        },
+        pushServiceURL: process.env.PUSH_SERVICE_URL || 'http://localhost/api/v1/push',
+
     }
 }
