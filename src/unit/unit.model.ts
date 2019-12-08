@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
+import * as mongooseLeanId from 'mongoose-lean-id';
 import { IUnit } from './unit.interface';
-
 const unitSchema: mongoose.Schema = new mongoose.Schema(
     {
         name: {
@@ -27,5 +27,7 @@ const unitSchema: mongoose.Schema = new mongoose.Schema(
         }
     }
 );
+
+unitSchema.plugin(mongooseLeanId);
 
 export const UnitModel = mongoose.model<IUnit & mongoose.Document>('Unit', unitSchema);
