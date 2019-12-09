@@ -13,6 +13,6 @@ export class RequestRepository extends Repository<IRequest> {
             updateQuery = updateQuery.populate(populateOptions);
         }
 
-        return updateQuery.exec();
+        return updateQuery.lean().exec();
     }
 }
