@@ -5,13 +5,43 @@ import { RequestStatus } from '../request/request-status.enum';
 
 export class ExternalService {
 
-    static async notifyStatusService(request: IRequest) {
+    static async notifyNewRequest(request: IRequest) {
         const result = await axios.default.post(`${config.externalServices.statusService.url}`, {
             ...request,
-            status: ExternalService.convertStatus(request.status),
+            status: ExternalService.getStatus(request),
         }).catch(e => undefined);
 
         return result.data;
+    }
+
+    static async notifyStatusChange(request: IRequest) {
+        const status = ExternalService.getStatus(request);
+        const result = await axios.default.put(`${config.externalServices.statusService.url}/${request.id}`, {
+            ...request,
+            status
+        }).catch(e => undefined);
+
+        if(status === config.externalServices.statusService.statuses.APPROVED) {
+            await ExternalService.notifyPushService({...request});
+        }
+
+        return result.data;
+    }
+
+    private static getStatus(request: IRequest): string {
+        const { workflow } = request;
+        const statuses = workflow.map(task => task.status);
+        let status = RequestStatus.PENDING;
+
+        if (statuses.indexOf(RequestStatus.DENIED) !== -1) {
+            status = RequestStatus.DENIED;
+        } else if (statuses.indexOf(RequestStatus.PENDING) !== -1 || statuses.indexOf(RequestStatus.WAITING_FOR_INFO) !== -1) {
+            status = RequestStatus.PENDING;
+        } else if (statuses.indexOf(RequestStatus.APPROVED) !== -1) {
+            status = RequestStatus.APPROVED;
+        }
+
+        return this.convertStatus(status);
     }
 
     private static convertStatus(status: RequestStatus): string {
