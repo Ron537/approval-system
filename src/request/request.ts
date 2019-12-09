@@ -22,7 +22,10 @@ export class Request {
 
         request.unit = user.unit;
 
-        return Request.requestRepository.create(request);
+        const req = await Request.requestRepository.create(request);
+        await ExternalService.notifyNewRequest(req);
+
+        return req;
     }
 
     static async changeStatus(requestId: string, user: IUser, status: RequestStatus): Promise<IRequest> {
@@ -59,8 +62,10 @@ export class Request {
             }
         }
 
-        // await ExternalService.notifyStatusService({ ...request, status });
-        return await Request.requestRepository.updateOne(condition, updateExpression);
+        const req = await Request.requestRepository.updateOne(condition, updateExpression);
+        await ExternalService.notifyStatusChange(req);
+
+        return req;
     }
 
     private static hasApprovePermission(user: IUser, unit: IUnit) {
