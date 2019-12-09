@@ -38,4 +38,22 @@ export class UserService {
 
         return usersMap;
     }
+
+    static async search(term: string) {
+        const token = await Spike.getToken();
+
+        const params = new URLSearchParams();
+        params.append('fullname', term);
+
+        const result = await axios.default.get(`${config.kartoffel.url}/persons/search`, {
+            headers: {
+                Authorization: token
+            },
+            params
+        });
+
+        const data = result.data && Array.isArray(result.data) ? result.data : [];
+
+        return data.map(usr => ({id: usr.id, name: usr.fullName}));
+    }
 }
