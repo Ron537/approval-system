@@ -5,6 +5,7 @@ import { requestTaskSchema } from './request-task.schema';
 import { IRequest } from './request.interface';
 import { Unit } from '../unit/unit';
 import { RequestType } from './request-type.enum';
+import { UserService } from '../utils/users-service/service';
 
 const toSchema: mongoose.Schema = new mongoose.Schema(
     {
@@ -74,13 +75,25 @@ requestSchema.pre('save', async function (next) {
 
     try {
         const unit = await Unit.findByName(unitName);
+        const user = await UserService.getById(document.from);
+
         const workflow = [];
 
         if (unit.approvers && Array.isArray(unit.approvers) && unit.approvers.length > 0) {
-            workflow.push({ type: RequestType.REGULAR });
+            workflow.push({
+                type: RequestType.REGULAR,
+                status: unit.approvers.indexOf(user.rank) !== -1
+                    ? RequestStatus.APPROVED
+                    : RequestStatus.PENDING
+            });
         }
         if (unit.specialApprovers && Array.isArray(unit.specialApprovers) && unit.specialApprovers.length > 0) {
-            workflow.push({ type: RequestType.SPECIAL });
+            workflow.push({
+                type: RequestType.SPECIAL,
+                status: unit.specialApprovers.indexOf(user.id) !== -1
+                    ? RequestStatus.APPROVED
+                    : RequestStatus.PENDING
+            });
         }
 
         document.workflow = workflow;
