@@ -29,12 +29,6 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
             type: String,
         },
         id: String,
-        status: {
-            type: String,
-            enum: Object.keys(RequestStatus),
-            default: RequestStatus.PENDING,
-            required: true,
-        },
         fileId: {
             type: String,
             required: true,
