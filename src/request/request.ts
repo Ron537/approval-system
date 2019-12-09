@@ -83,7 +83,7 @@ export class Request {
             from: user.id
         });
 
-        return await Request.populateRequestUsers(requests);
+        return await Request.prepareRequests(requests);
     }
 
     static async getApprovableRequests(user: IUser): Promise<IRequest[]> {
@@ -124,7 +124,28 @@ export class Request {
 
         const requests = await Request.requestRepository.find(condition);
 
-        return await Request.populateRequestUsers(requests);
+        return await Request.prepareRequests(requests);
+    }
+
+    private static applyStatuses(request: IRequest[]): IRequest[] {
+        return request.map(request => {
+            const statuses = request.workflow.map(task => task.status);
+            let status = RequestStatus.PENDING;
+
+            if(statuses.indexOf(RequestStatus.DENIED) !== -1) {
+                status = RequestStatus.DENIED;
+            } else if(statuses.indexOf(RequestStatus.WAITING_FOR_INFO) !== -1) {
+                status = RequestStatus.WAITING_FOR_INFO;
+            } else if(statuses.indexOf(RequestStatus.PENDING) !== -1)  {
+                status = RequestStatus.PENDING;
+            } else if(statuses.indexOf(RequestStatus.APPROVED) !== -1) {
+                status = RequestStatus.APPROVED;
+            }
+
+            request.status = status;
+
+            return request;
+        })
     }
 
     private static async populateRequestUsers(requests: IRequest[]) {
@@ -139,5 +160,11 @@ export class Request {
 
             return req;
         })
+    }
+
+    private static prepareRequests(requests:IRequest[]) {
+        const requestsWithStatuses = Request.applyStatuses(requests);
+
+        return Request.populateRequestUsers(requestsWithStatuses);
     }
 }
