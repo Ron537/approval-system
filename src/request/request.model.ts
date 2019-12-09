@@ -53,6 +53,9 @@ const requestSchema: mongoose.Schema = new mongoose.Schema(
             required: true,
         },
         workflow: [requestTaskSchema],
+        additionalInfo: {
+            type: String,
+        }
     },
     {
         _id: false,

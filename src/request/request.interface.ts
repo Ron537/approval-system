@@ -12,4 +12,5 @@ export interface IRequest {
     info?: string;
     authorizer?: string;
     workflow: IRequestTask[];
+    additionalInfo?: string;
 }

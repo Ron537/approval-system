@@ -28,7 +28,7 @@ export class Request {
         return req;
     }
 
-    static async changeStatus(requestId: string, user: IUser, status: RequestStatus): Promise<IRequest> {
+    static async changeStatus(requestId: string, user: IUser, status: RequestStatus, additionalInfo?: string): Promise<IRequest> {
 
         const request = await Request.requestRepository.findById(requestId);
 
@@ -62,6 +62,10 @@ export class Request {
                     'workflow.$.authorizer': request.from,
                 }
             }
+        }
+
+        if (additionalInfo && updateExpression['$set']) {
+            updateExpression['$set']['additionalInfo'] = additionalInfo;
         }
 
         const req = await Request.requestRepository.updateOne(condition, updateExpression);
