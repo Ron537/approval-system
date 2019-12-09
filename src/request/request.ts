@@ -108,6 +108,7 @@ export class Request {
         let condition = {
             'workflow.status': {
                 $in: [RequestStatus.PENDING, RequestStatus.WAITING_FOR_INFO],
+                $nin: [RequestStatus.DENIED],
             }
         };
 
@@ -132,13 +133,13 @@ export class Request {
             const statuses = request.workflow.map(task => task.status);
             let status = RequestStatus.PENDING;
 
-            if(statuses.indexOf(RequestStatus.DENIED) !== -1) {
+            if (statuses.indexOf(RequestStatus.DENIED) !== -1) {
                 status = RequestStatus.DENIED;
-            } else if(statuses.indexOf(RequestStatus.WAITING_FOR_INFO) !== -1) {
+            } else if (statuses.indexOf(RequestStatus.WAITING_FOR_INFO) !== -1) {
                 status = RequestStatus.WAITING_FOR_INFO;
-            } else if(statuses.indexOf(RequestStatus.PENDING) !== -1)  {
+            } else if (statuses.indexOf(RequestStatus.PENDING) !== -1) {
                 status = RequestStatus.PENDING;
-            } else if(statuses.indexOf(RequestStatus.APPROVED) !== -1) {
+            } else if (statuses.indexOf(RequestStatus.APPROVED) !== -1) {
                 status = RequestStatus.APPROVED;
             }
 
@@ -162,7 +163,7 @@ export class Request {
         })
     }
 
-    private static prepareRequests(requests:IRequest[]) {
+    private static prepareRequests(requests: IRequest[]) {
         const requestsWithStatuses = Request.applyStatuses(requests);
 
         return Request.populateRequestUsers(requestsWithStatuses);
