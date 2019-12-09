@@ -51,13 +51,15 @@ export class Request {
             updateExpression = {
                 $set: {
                     'workflow.$[].status': status,
+                    'workflow.$[].authorizer': request.from,
                 }
             }
         } else if (hasApprovePermission || hasSpecialApprovePermission) {
             condition['workflow.type'] = hasApprovePermission ? RequestType.REGULAR : RequestType.SPECIAL;
             updateExpression = {
                 $set: {
-                    'workflow.$.status': status
+                    'workflow.$.status': status,
+                    'workflow.$.authorizer': request.from,
                 }
             }
         }
