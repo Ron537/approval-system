@@ -8,8 +8,10 @@ export abstract class Repository<T> {
         this.model = schemaModel;
     }
 
-    create(item: T): Promise<T> {
-        return this.model.create(item);
+    async create(item: T): Promise<T> {
+        const doc = await this.model.create(item);
+
+        return doc.toObject();
     }
 
     update(id: string, item: Partial<T>, populateOptions?: string | Object): Promise<T> {
