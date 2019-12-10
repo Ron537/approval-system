@@ -7,7 +7,7 @@ import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 import { config } from './config';
 import { AppRouter } from './router';
-import { userErrorHandler, serverErrorHandler, unknownErrorHandler } from './utils/errors/handler';
+import { userErrorHandler, serverErrorHandler, unknownErrorHandler, errorHandler } from './utils/errors/handler';
 import { AuthenticationHandler } from './authentication/handler';
 import { AuthenticationRouter } from './authentication/router';
 import * as expressProxy from 'express-http-proxy';
@@ -73,9 +73,10 @@ export class Server {
     }
 
     private initializeErrorHandler() {
-        this.app.use(userErrorHandler);
-        this.app.use(serverErrorHandler);
-        this.app.use(unknownErrorHandler);
+        this.app.use(errorHandler);
+        // this.app.use(userErrorHandler);
+        // this.app.use(serverErrorHandler);
+        // this.app.use(unknownErrorHandler);
     }
 
     private initializeAuthenticator() {

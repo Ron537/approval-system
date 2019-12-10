@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { IRequest } from './request.interface';
-import { UserError, ValidationError } from '../utils/errors/application';
+import { ValidationError } from '../utils/errors/user';
 
 export class RequestValidator {
     static isValid(req: Request, res: Response, next: NextFunction) {
@@ -17,7 +17,7 @@ export class RequestValidator {
             !request.fileId ||
             !request.classification
         ) {
-            return next(new UserError('Validation error', 400));
+            return next(new ValidationError());
         }
 
         return next();

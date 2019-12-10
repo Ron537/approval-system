@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserError, ValidationError } from '../utils/errors/application';
+import { ValidationError } from '../utils/errors/user';
 
 export class UnitValidator {
 

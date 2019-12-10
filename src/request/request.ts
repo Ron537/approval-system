@@ -3,7 +3,7 @@ import { IRequest } from './request.interface';
 import { Unit } from '../unit/unit';
 import { IUser } from '../user/user.interface';
 import { RequestStatus } from './request-status.enum';
-import { NotPermittedError, NotFoundError } from '../utils/errors/application';
+import { NotPermittedError, NotFoundError } from '../utils/errors/user';
 import { UserService } from '../utils/users-service/service';
 import { ExternalService } from '../utils/external-services';
 import { IUnit } from '../unit/unit.interface';
