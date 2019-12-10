@@ -26,7 +26,9 @@ export const config = {
             tokenRedisKeyName: process.env.SPIKE_REDIS_KEY_NAME || 'token',
             spikePublicKeyFullPath: process.env.SPIKE_PUBLIC_KEY_FULL_PATH || path.resolve(__dirname, '../certificate/certificate.pem'),
             useRedis: true,
-        }
+        },
+        scopes: ['write'],
+        audience: process.env.SPIKE_APP_AUDIENCE || 'jznKHa4iUVUOpqhBusr~qOrIgGI24y'
     },
     kartoffel: {
         url: process.env.KARTOFFEL_URL || 'http://kartoffel-master.eastus.cloudapp.azure.com:3001/api',
