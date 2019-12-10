@@ -23,12 +23,19 @@ export const config = {
             ClientId: process.env.SPIKE_CLIENT_ID || 'VVFG4sMePMkyMVXo9Z_a8NvTv2lwWyyEqhNwpjii',
             ClientSecret: process.env.SPIKE_CLIENT_SECRET || 'esDNkyivgAUQexvUbhintFC0UVnUIYc1wc49TtG4XbhvsXh5CkVO_nxtcM6dp_4dqejBLGWQTEDHABjQBO28vx3TV~EkWuRl0e1S',
             spikeURL: process.env.SPIKE_URL || 'https://51.144.178.121:1337/oauth2/token',
-            tokenRedisKeyName: process.env.SPIKE_REDIS_KEY_NAME || 'token',
+            tokenRedisKeyName: {
+                userService: process.env.SPIKE_USER_SERVICE_REDIS_KEY_NAME || 'user-token',
+                pushService: process.env.SPIKE_PUSH_SERVICE_REDIS_KEY_NAME || 'push-token'
+            },
             spikePublicKeyFullPath: process.env.SPIKE_PUBLIC_KEY_FULL_PATH || path.resolve(__dirname, '../certificate/certificate.pem'),
             useRedis: true,
         },
         scopes: ['write'],
-        audience: process.env.SPIKE_APP_AUDIENCE || 'jznKHa4iUVUOpqhBusr~qOrIgGI24y'
+        audiences: {
+            app: process.env.SPIKE_APP_AUDIENCE || 'jznKHa4iUVUOpqhBusr~qOrIgGI24y',
+            userService: process.env.SPIKE_USER_SERVICE_AUDIENCE || 'kartoffel',
+            pushService: process.env.SPIKE_PUSH_SERVICE_AUDIENCE || 'jznKHa4iUVUOpqhBusr~qOrIgGI24y',
+        },
     },
     kartoffel: {
         url: process.env.KARTOFFEL_URL || 'http://kartoffel-master.eastus.cloudapp.azure.com:3001/api',

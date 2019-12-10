@@ -6,7 +6,7 @@ import { IUser } from '../../user/user.interface';
 export class UserService {
 
     static async getById(id: string) {
-        const token = await Spike.getToken();
+        const token = await Spike.getUserServiceToken();
         const result = await axios.default.get(`${config.kartoffel.url}/persons/${id}`, {
             headers: {
                 Authorization: token
@@ -40,7 +40,7 @@ export class UserService {
     }
 
     static async search(term: string) {
-        const token = await Spike.getToken();
+        const token = await Spike.getUserServiceToken();
 
         const params = new URLSearchParams();
         params.append('fullname', term);
