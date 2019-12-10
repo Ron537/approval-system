@@ -24,7 +24,7 @@ export const config = {
             ClientSecret: process.env.SPIKE_CLIENT_SECRET || 'esDNkyivgAUQexvUbhintFC0UVnUIYc1wc49TtG4XbhvsXh5CkVO_nxtcM6dp_4dqejBLGWQTEDHABjQBO28vx3TV~EkWuRl0e1S',
             spikeURL: process.env.SPIKE_URL || 'https://51.144.178.121:1337/oauth2/token',
             tokenRedisKeyName: process.env.SPIKE_REDIS_KEY_NAME || 'token',
-            spikePublicKeyFullPath: process.env.SPIKE_PUBLIC_KEY_FULL_PAYH || path.resolve(__dirname, '../certificate/certificate.pem'),
+            spikePublicKeyFullPath: process.env.SPIKE_PUBLIC_KEY_FULL_PATH || path.resolve(__dirname, '../certificate/certificate.pem'),
             useRedis: true,
         }
     },
