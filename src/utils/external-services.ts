@@ -2,6 +2,7 @@ import * as axios from 'axios';
 import { IRequest } from '../request/request.interface';
 import { config } from '../config';
 import { RequestStatus } from '../request/request-status.enum';
+import { Spike } from './users-service/spike';
 
 export class ExternalService {
 
@@ -21,8 +22,8 @@ export class ExternalService {
             status
         }).catch(e => undefined);
 
-        if(status === config.externalServices.statusService.statuses.APPROVED) {
-            await ExternalService.notifyPushService({...request});
+        if (status === config.externalServices.statusService.statuses.APPROVED) {
+            await ExternalService.notifyPushService({ ...request });
         }
 
         return result.data;
@@ -56,8 +57,13 @@ export class ExternalService {
     }
 
     static async notifyPushService(request: IRequest) {
+        const token = await Spike.getPushServiceToken();
         const result = await axios.default.post(`${config.externalServices.pushServiceURL}`, {
             request
+        }, {
+            headers: {
+                Authorization: token
+            }
         }).catch(e => undefined);
 
         return result.data;
