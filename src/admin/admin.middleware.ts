@@ -8,5 +8,5 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
         return next();
     }
 
-    return res.status(401).send();
+    return res.status(403).send();
 }
