@@ -82,15 +82,21 @@ export class Request {
         return (unit && unit.specialApprovers && unit.specialApprovers.length > 0 && unit.specialApprovers.indexOf(user.id) !== -1);
     }
 
-    static async getMyRequests(user: IUser): Promise<IRequest[]> {
-        const requests = await Request.requestRepository.find({
+    static async getMyRequests(user: IUser, search?: string): Promise<IRequest[]> {
+        let condition = {
             from: user.id
-        });
+        } as Object;
+
+        if (search) {
+            condition = { id: { $regex: '^' + search }, ...condition };
+        }
+
+        const requests = await Request.requestRepository.find(condition);
 
         return await Request.prepareRequests(requests);
     }
 
-    static async getApprovableRequests(user: IUser): Promise<IRequest[]> {
+    static async getApprovableRequests(user: IUser, search?: string): Promise<IRequest[]> {
         const unit = await Unit.findByName(user.unit);
 
         if (!unit) {
@@ -114,7 +120,7 @@ export class Request {
                 $in: [RequestStatus.PENDING, RequestStatus.WAITING_FOR_INFO],
                 $nin: [RequestStatus.DENIED],
             }
-        };
+        } as Object;
 
         if (!hasApprovePermission && !hasSpecialApprovePermission) {
             return [];
@@ -125,6 +131,10 @@ export class Request {
             ];
         } else if (hasApprovePermission || hasSpecialApprovePermission) {
             condition = { ...condition, ...(hasApprovePermission ? regularApproveCondition : specialApproveCondition) };
+        }
+
+        if (search) {
+            condition = { id: { $regex: '^' + search }, ...condition };
         }
 
         const requests = await Request.requestRepository.find(condition);

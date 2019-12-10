@@ -12,10 +12,10 @@ export class RequestController {
     }
 
     static async getMyRequests(req: ExpressRequest, res: ExpressResponse) {
-        res.json(await Request.getMyRequests(req.user as IUser));
+        res.json(await Request.getMyRequests(req.user as IUser, req.query.search));
     }
 
     static async getApprovableRequests(req: ExpressRequest, res: ExpressResponse) {
-        res.json(await Request.getApprovableRequests(req.user as IUser));
+        res.json(await Request.getApprovableRequests(req.user as IUser, req.query.search));
     }
 }
