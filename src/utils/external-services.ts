@@ -7,10 +7,15 @@ import { Spike } from './users-service/spike';
 export class ExternalService {
 
     static async notifyNewRequest(request: IRequest) {
+        const status = ExternalService.getStatus(request);
         const result = await axios.default.post(`${config.externalServices.statusService.url}`, {
             ...request,
-            status: ExternalService.getStatus(request),
+            status
         }).catch(e => undefined);
+
+        if (status === config.externalServices.statusService.statuses.APPROVED) {
+            await ExternalService.notifyPushService(request);
+        }
 
         return result.data;
     }
